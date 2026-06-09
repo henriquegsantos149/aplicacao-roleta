@@ -1,6 +1,6 @@
 const chatHistory = document.getElementById('chat-history');
 const chatForm = document.getElementById('chat-form');
-const userInput = document.getElementById('user-input');
+const userInput = document.getElementById('chat-response-field');
 const sendButton = document.getElementById('send-button');
 
 // Substitua esta URL pelo link do seu Google Apps Script (Executar como Web App)

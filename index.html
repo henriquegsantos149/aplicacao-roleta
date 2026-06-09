@@ -32,9 +32,9 @@
         <main class="chat-history" id="chat-history">
             <!-- Messages will be injected here dynamically -->
             <div id="input-container" class="input-container">
-                <form id="chat-form" class="chat-form">
-                    <input type="text" id="user-input" class="user-input" placeholder="Digite sua resposta..."
-                        autocomplete="off" disabled>
+                <form id="chat-form" class="chat-form" autocomplete="off">
+                    <input type="text" id="chat-response-field" name="chat-response-field" class="user-input" placeholder="Digite sua resposta..."
+                        autocomplete="new-password" autocorrect="off" spellcheck="false" data-lpignore="true" disabled>
                     <button type="submit" id="send-button" class="send-button" disabled>
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3"
                             fill="none" stroke-linecap="round" stroke-linejoin="round" class="send-icon">
