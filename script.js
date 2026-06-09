@@ -137,6 +137,9 @@ function showInputArea(step) {
         sendButton.disabled = false;
         userInput.focus();
     }
+    
+    // Rola para baixo para garantir que o input ou botões estejam visíveis
+    setTimeout(scrollToBottom, 100);
 }
 
 function disableInput() {
