@@ -7,9 +7,9 @@ const sendButton = document.getElementById('send-button');
 const APPS_SCRIPT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzTaYQ0Uh40MevHqyqfS3gjlyNis56d3uTWuykYB-Nk4XK9KtHU5R9kcDraw4o6ozLb/exec';
 
 const initialMessages = [
-    "Faaaala, tudo certo? Sou o Agente Pro e estou aqui para fazer o seu cadastro, para que você possa girar a roleta e concorrer a prêmios incríveis!",
-    "Antes de qualquer coisa, é importante que você saiba que a Ambiental Pro é um ecossistema do setor ambiental que transforma conhecimento em diferencial competitivo, e conexões em negócios estratégicos.",
-    "Temos 5 formações a nível de pós-graduação, e diversos cursos de extensão, todos reconhecidos pelo MEC. Nossas formações já transformaram a vida de mais de 80k alunos!"
+    "Faaaala, tudo certo? Sou o <b>Agente Pro</b> e estou aqui para fazer o seu cadastro, para que você possa girar a roleta e concorrer a <b>prêmios incríveis</b>!",
+    "A Ambiental Pro é um <b>ecossistema</b> do setor ambiental que transforma conhecimento em diferencial competitivo, e conexões em negócios estratégicos, seja bem-vindo!",
+    "Nossas pós-graduações e cursos de extensão são <b>reconhecidos pelo MEC</b>, e já transformaram a vida de mais de <b>80k alunos</b>."
 ];
 
 const questionSteps = [
@@ -60,7 +60,12 @@ function addMessage(text, isUser = false) {
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.textContent = text;
+
+    if (isUser) {
+        bubble.textContent = text;
+    } else {
+        bubble.innerHTML = text;
+    }
 
     wrapper.appendChild(bubble);
     chatHistory.appendChild(wrapper);
@@ -68,7 +73,7 @@ function addMessage(text, isUser = false) {
 }
 
 // Simula o processo do bot digitando e enviando mensagem
-async function processBotMessage(text, delayMs = 1500) {
+async function processBotMessage(text, delayMs = 700) {
     // Adiciona indicador de digitando
     const typingIndicator = createTypingIndicator();
     chatHistory.appendChild(typingIndicator);
@@ -87,12 +92,12 @@ async function processBotMessage(text, delayMs = 1500) {
 // Inicia o fluxo de mensagens do bot
 async function startChatFlow() {
     for (let i = 0; i < initialMessages.length; i++) {
-        // Calcula o tempo de digitação baseado no tamanho do texto (simulando realismo)
-        const typingDelay = Math.min(1000 + (initialMessages[i].length * 20), 3000);
+        // Calcula um tempo mais rápido de digitação
+        const typingDelay = Math.min(400 + (initialMessages[i].length * 10), 1200);
 
-        // Pausa entre as mensagens
+        // Pausa reduzida entre as mensagens
         if (i > 0) {
-            await new Promise(resolve => setTimeout(resolve, 800));
+            await new Promise(resolve => setTimeout(resolve, 400));
         }
 
         await processBotMessage(initialMessages[i], typingDelay);
@@ -100,7 +105,7 @@ async function startChatFlow() {
 
     // Após as mensagens iniciais, inicia a fase de perguntas
     isAskingQuestions = true;
-    await processBotMessage(questionSteps[0].text, 1500);
+    await processBotMessage(questionSteps[0].text); // Usa o delay padrão
     showInputArea(questionSteps[0]);
 }
 
@@ -120,14 +125,14 @@ function showInputArea(step) {
     } else {
         chatForm.style.display = 'flex';
         buttonChoices.style.display = 'none';
-        
+
         // Define o texto de exemplo (placeholder) baseado na pergunta
         if (step && step.placeholder) {
             userInput.placeholder = step.placeholder;
         } else {
             userInput.placeholder = "Digite sua resposta...";
         }
-        
+
         userInput.disabled = false;
         sendButton.disabled = false;
         userInput.focus();
@@ -151,21 +156,21 @@ chatForm.addEventListener('submit', (e) => {
 async function submitAnswer(rawAnswer) {
     const answer = rawAnswer.trim();
     if (!answer) return;
-    
+
     // Mostra mensagem do usuário
     addMessage(answer, true);
-    
+
     // Limpa e desabilita input
     userInput.value = '';
     disableInput();
-    
+
     if (isAskingQuestions && currentStepIndex < questionSteps.length) {
         // Salva a resposta do passo atual
         const currentStep = questionSteps[currentStepIndex];
         userData[currentStep.key] = answer;
-        
+
         currentStepIndex++;
-        
+
         // Pula os passos que não atendem à condição (ex: se Não for formado, pula formação)
         while (currentStepIndex < questionSteps.length) {
             const nextStep = questionSteps[currentStepIndex];
@@ -174,7 +179,7 @@ async function submitAnswer(rawAnswer) {
             }
             currentStepIndex++;
         }
-        
+
         // Verifica se ainda tem perguntas
         if (currentStepIndex < questionSteps.length) {
             let nextStep = questionSteps[currentStepIndex];
@@ -184,12 +189,12 @@ async function submitAnswer(rawAnswer) {
                 let firstName = userData.nome.split(" ")[0];
                 nextQuestionText = nextQuestionText.replace("{nome}", firstName);
             }
-            await processBotMessage(nextQuestionText, 1500);
+            await processBotMessage(nextQuestionText);
             showInputArea(nextStep);
         } else {
             // Finalizou as perguntas
             isAskingQuestions = false;
-            await processBotMessage(`Obrigado, ${userData.nome.split(" ")[0]}! Aguarde enquanto processo seu cadastro...`, 1500);
+            await processBotMessage(`Obrigado, ${userData.nome.split(" ")[0]}! Aguarde enquanto processo seu cadastro...`);
             await sendDataToWebhook(userData);
         }
     }
@@ -221,7 +226,7 @@ async function sendDataToWebhook(data) {
         typingIndicator.remove();
 
         // Sucesso
-        await processBotMessage("Cadastro recebido com sucesso! Agora você já pode girar a roleta. 🚀", 1000);
+        await processBotMessage("Cadastro recebido com sucesso! Agora você já pode girar a roleta. 🚀");
 
     } catch (error) {
         console.error('Erro ao enviar dados:', error);
@@ -230,7 +235,7 @@ async function sendDataToWebhook(data) {
         const indicator = document.querySelector('.typing-wrapper');
         if (indicator) indicator.remove();
 
-        await processBotMessage("Oops, ocorreu um pequeno erro de conexão. Mas não se preocupe, no ambiente real isso estará conectado à planilha!", 1500);
+        await processBotMessage("Oops, ocorreu um pequeno erro de conexão. Mas não se preocupe, no ambiente real isso estará conectado à planilha!");
     }
 }
 

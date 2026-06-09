@@ -287,4 +287,19 @@ body {
         max-width: 90%;
         font-size: 0.95rem;
     }
+
+    .chat-form {
+        min-width: unset;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .button-choices {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .choice-btn {
+        width: 100%;
+    }
 }
