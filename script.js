@@ -150,10 +150,16 @@ function disableInput() {
     buttonChoices.style.display = 'none';
 }
 
-// Lida com o envio do formulário (texto)
-chatForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+// Lida com o envio do texto
+sendButton.addEventListener('click', () => {
     submitAnswer(userInput.value);
+});
+
+userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        submitAnswer(userInput.value);
+    }
 });
 
 async function submitAnswer(rawAnswer) {
