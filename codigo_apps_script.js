@@ -1,10 +1,19 @@
 function doPost(e) {
   try {
-    // Acessa a aba ativa da planilha onde o script está vinculado
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    // 1. Acessa a aba pelo NOME exato para evitar salvar na aba errada
+    // IMPORTANTE: Substitua 'Página1' pelo nome real da sua aba (ex: 'Respostas', 'Página1', etc)
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Página1');
     
-    // Pega o conteúdo da requisição POST feita pelo chatbot
-    var body = e.postData.contents;
+    if (!sheet) {
+      throw new Error("Aba não encontrada. Verifique o nome da aba no script.");
+    }
+    
+    // 2. Pega o conteúdo da requisição POST feita pelo chatbot
+    // Adicionamos uma verificação para evitar erro caso postData venha vazio
+    var body = e.postData ? e.postData.contents : null;
+    if (!body) {
+      throw new Error("Corpo da requisição vazio.");
+    }
     var data = JSON.parse(body);
     
     // Organiza os dados recebidos na ordem desejada:

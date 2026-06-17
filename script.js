@@ -227,7 +227,9 @@ async function sendDataToWebhook(data) {
             method: 'POST',
             mode: 'no-cors',
             headers: {
-                'Content-Type': 'application/json',
+                // Ao usar no-cors, application/json é ignorado pelo navegador. 
+                // Usamos text/plain para garantir que os dados sejam enviados corretamente.
+                'Content-Type': 'text/plain;charset=utf-8',
             },
             body: JSON.stringify(payload)
         });
